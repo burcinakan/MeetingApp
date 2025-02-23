@@ -9,10 +9,10 @@ namespace MeetingApp.Api.Repositories
 		IQueryable<X> Select<X>(Expression<Func<T, X>> exp);
 		List<T> Where(Expression<Func<T, bool>> exp);
 
-		T Find(Guid id);
-		T FirstOrDefault(Expression<Func<T, bool>> exp);
-		void Add(T entity);
-		void Delete(T entity);
-		void Update(T entity);
+		Task<T> FindAsync(Guid id);
+		Task<T> FirstOrDefaultAsync(Expression<Func<T, bool>> exp);
+		Task AddAsync(T entity);
+		Task DeleteAsync(T entity);
+		Task UpdateAsync(T entity);
 	}
 }

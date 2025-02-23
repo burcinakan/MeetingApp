@@ -5,8 +5,8 @@ namespace MeetingApp.Api.Services
 {
 	public interface IAuthService
 	{
-		string Register(RegisterDto registerDto);
-		string Login(LoginDto loginDto);
+		Task<string> Register(RegisterDto registerDto);
+		Task<string> Login(LoginDto loginDto);
 
 	}
 }

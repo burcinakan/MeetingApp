@@ -31,9 +31,9 @@ namespace MeetingApp.Web.Controllers
 		}
 
 		[HttpDelete("DeleteUser/{userId}")]
-		public IActionResult DeleteUser(Guid userId)
+		public async Task<IActionResult> DeleteUser(Guid userId)
 		{
-			var result = _userService.Delete(userId);
+			var result = await _userService.Delete(userId);
 
 			if (result)
 			{

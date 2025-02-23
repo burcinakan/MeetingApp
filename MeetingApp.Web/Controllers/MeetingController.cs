@@ -36,9 +36,9 @@ namespace MeetingApp.Web.Controllers
 			return Ok(meetings);
 		}
 		[HttpPost("CancelMeeting/{meetingId}")]
-		public IActionResult CancelMeeting(Guid meetingId)
+		public async Task<IActionResult> CancelMeeting(Guid meetingId)
 		{
-			var meetings = _meetingService.CancelMeeting(meetingId);
+			var meetings = await _meetingService.CancelMeeting(meetingId);
 			if (meetings)
 			{
 				return Ok(new { message = "Toplantı başarıyla iptal edildi." });
@@ -46,9 +46,9 @@ namespace MeetingApp.Web.Controllers
 			return NotFound(new { message = "Toplantı bulunamadı." });
 		}
 		[HttpPost("RevertMeeting/{meetingId}")]
-		public IActionResult RevertMeeting(Guid meetingId)
+		public async Task<IActionResult> RevertMeeting(Guid meetingId)
 		{
-			var meetings = _meetingService.RevertMeeting(meetingId);
+			var meetings = await _meetingService.RevertMeeting(meetingId);
 			if (meetings)
 			{
 				return Ok(new { message = "Toplantı aktif edildi." });
@@ -57,12 +57,12 @@ namespace MeetingApp.Web.Controllers
 		}
 
 		[HttpPost("AddMeeting")]
-		public IActionResult AddMeeting([FromBody] MeetingDTO meetingDTO)
+		public async Task<IActionResult> AddMeeting([FromBody] MeetingDTO meetingDTO)
 		{
 			if (meetingDTO == null)
 				return BadRequest("Veri hatalı!");
 
-			var result = _meetingService.Add(meetingDTO);
+			var result = await _meetingService.Add(meetingDTO);
 			if (result)
 				return Ok("Başarılı!");
 
@@ -70,9 +70,9 @@ namespace MeetingApp.Web.Controllers
 		}
 
 		[HttpDelete("DeleteMeeting/{meetingId}")]
-		public IActionResult DeleteMeeting(Guid meetingId)
+		public async Task<IActionResult> DeleteMeeting(Guid meetingId)
 		{
-			var result = _meetingService.Delete(meetingId);
+			var result = await _meetingService.Delete(meetingId);
 
 			if (result)
 			{
@@ -83,9 +83,9 @@ namespace MeetingApp.Web.Controllers
 		}
 
 		[HttpPut("UpdateMeeting/{meetingId}")]
-		public IActionResult UpdateMeeting(Guid meetingId, [FromBody] MeetingDTO meetingDTO)
+		public async Task<IActionResult> UpdateMeeting(Guid meetingId, [FromBody] MeetingDTO meetingDTO)
 		{
-			var result = _meetingService.Update(meetingId, meetingDTO);
+			var result = await _meetingService.Update(meetingId, meetingDTO);
 
 			if (result)
 			{

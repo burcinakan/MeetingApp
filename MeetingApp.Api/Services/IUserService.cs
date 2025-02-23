@@ -14,6 +14,6 @@ namespace MeetingApp.Api.Services
 
 		List<User> GetUserById(Guid userId);
 
-		bool Delete(Guid ID);
+		Task<bool> Delete(Guid ID);
 	}
 }

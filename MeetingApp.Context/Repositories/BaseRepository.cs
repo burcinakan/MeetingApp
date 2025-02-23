@@ -1,6 +1,7 @@
 ﻿using MeetingApp.Api.Repositories;
 using MeetingApp.DAL.Contexts;
 using MeetingApp.Model.Models;
+using Microsoft.EntityFrameworkCore;
 using System.Linq.Expressions;
 
 namespace MeetingApp.Context.Repositories
@@ -14,27 +15,27 @@ namespace MeetingApp.Context.Repositories
 			_context = context;
 		}
 
-		public void Add(T entity)
+		public async Task AddAsync(T entity)
 		{
-			_context.Set<T>().Add(entity);
-			_context.SaveChanges();
+			await _context.Set<T>().AddAsync(entity);
+			await _context.SaveChangesAsync();
 		}
 
-		public void Delete(T entity)
+		public async Task DeleteAsync(T entity)
 		{
 			_context.Set<T>().Remove(entity);
 			entity.Status = Model.Enums.DataStatus.Deleted;
-			_context.SaveChanges();
+			await _context.SaveChangesAsync();
 		}
 
-		public T Find(Guid id)
+		public async Task<T> FindAsync(Guid id)
 		{
-			return _context.Set<T>().Find(id);
+			return await _context.Set<T>().FindAsync(id);
 		}
 
-		public T FirstOrDefault(Expression<Func<T, bool>> exp)
+		public async Task<T> FirstOrDefaultAsync(Expression<Func<T, bool>> exp)
 		{
-			return _context.Set<T>().FirstOrDefault(exp);
+			return await _context.Set<T>().FirstOrDefaultAsync(exp);
 		}
 
 		public List<T> GetAll()
@@ -42,23 +43,33 @@ namespace MeetingApp.Context.Repositories
 			return _context.Set<T>().ToList();
 		}
 
+		public async Task<List<T>> GetAllAsync()
+		{
+			return await _context.Set<T>().ToListAsync();
+		}
+
 		public IQueryable<X> Select<X>(Expression<Func<T, X>> exp)
 		{
 			return _context.Set<T>().Select(exp);
 		}
 
-		public void Update(T entity)
+		public async Task UpdateAsync(T entity)
 		{
 			entity.Status = Model.Enums.DataStatus.Updated;
 			entity.ModifiedDate = DateTime.Now;
-			T unchangedEntity = Find(entity.ID);
+			var unchangedEntity = await FindAsync(entity.ID);
 			_context.Entry(unchangedEntity).CurrentValues.SetValues(entity);
-			_context.SaveChanges();
+			await _context.SaveChangesAsync();
 		}
 
 		public List<T> Where(Expression<Func<T, bool>> exp)
 		{
 			return _context.Set<T>().Where(exp).ToList();
+		}
+
+		public async Task<List<T>> WhereAsync(Expression<Func<T, bool>> exp)
+		{
+			return await _context.Set<T>().Where(exp).ToListAsync();
 		}
 	}
 }

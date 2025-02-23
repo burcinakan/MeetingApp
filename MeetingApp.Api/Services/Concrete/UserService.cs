@@ -26,14 +26,14 @@ namespace MeetingApp.Api.Services.Concrete
 		{
 			return _userRepository.GetUsers();
 		}
-		public bool Delete(Guid ID)
+		public async Task<bool> Delete(Guid ID)
 		{
-			var meeting = _userRepository.FirstOrDefault(x => x.ID == ID);
+			var meeting = await _userRepository.FirstOrDefaultAsync(x => x.ID == ID);
 
 			if (meeting == null)
 				return false;
 
-			_userRepository.Delete(meeting);
+			await _userRepository.DeleteAsync(meeting);
 
 			return true;
 		}

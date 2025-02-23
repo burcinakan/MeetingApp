@@ -8,6 +8,8 @@ namespace MeetingApp.Context.Configurations
 	{
 		public void Configure(EntityTypeBuilder<Meeting> builder)
 		{
+
+
 			builder.ToTable("Meetings");
 			builder.HasKey(x => x.ID);
 			builder.Property(x => x.Title).HasColumnName("Title");

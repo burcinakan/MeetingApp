@@ -20,9 +20,9 @@ namespace MeetingApp.Api.Services.Concrete
 			_mailService = mailService;
 		}
 
-		public string Login(LoginDto loginDto)
+		public async Task<string> Login(LoginDto loginDto)
 		{
-			var user = _userRepository.FirstOrDefault(u => u.Email == loginDto.Email);
+			var user = await _userRepository.FirstOrDefaultAsync(u => u.Email == loginDto.Email);
 			if (user == null)
 
 				throw new Exception("Kullanıcı bulunamadı!");
@@ -35,9 +35,9 @@ namespace MeetingApp.Api.Services.Concrete
 
 		}
 
-		public string Register(RegisterDto registerDto)
+		public async Task<string> Register(RegisterDto registerDto)
 		{
-			var checkUser = _userRepository.FirstOrDefault(u => u.Email == registerDto.Email);
+			var checkUser = await _userRepository.FirstOrDefaultAsync(u => u.Email == registerDto.Email);
 			if (checkUser != null)
 				throw new Exception("Bu e-posta adresi zaten kullanılıyor!");
 
@@ -54,7 +54,7 @@ namespace MeetingApp.Api.Services.Concrete
 				ProfileImage = registerDto.ProfileImage
 			};
 
-			_userRepository.Add(user);
+			await _userRepository.AddAsync(user);
 
 			//HoşgeldinizMaili
 			_mailService.SendWelcomeEmail(user.Email, user.Name + user.LastName);

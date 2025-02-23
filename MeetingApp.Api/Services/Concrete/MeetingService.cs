@@ -23,16 +23,18 @@ namespace MeetingApp.Api.Services.Concrete
 			_userRepository = userRepository;
 		}
 
-		public bool Add(MeetingDTO meetingDTO)
+		public async Task<bool> Add(MeetingDTO meetingDTO)
 		{
-			var userExists = _meetingRepository.FirstOrDefault(u => u.ID == meetingDTO.UserId
+			var userExists = await _meetingRepository.FirstOrDefaultAsync(u => u.ID == meetingDTO.UserId
 			&& u.StartDate == meetingDTO.StartDate
 			);
 			if (userExists != null)
 			{
 				throw new Exception("Belirtilen tarihte bu kullanıcının başka toplantısı mevcut!");
 			}
-			var users = _userRepository.FirstOrDefault(u => u.ID == meetingDTO.UserId);
+
+			var user = await _userRepository.FirstOrDefaultAsync(u => u.ID == meetingDTO.UserId);
+
 			var meeting = new Meeting
 			{
 				Title = meetingDTO.Title,
@@ -42,17 +44,21 @@ namespace MeetingApp.Api.Services.Concrete
 				DocumentUrl = meetingDTO.DocumentUrl,
 				UserId = meetingDTO.UserId
 			};
-			_meetingRepository.Add(meeting);
+			await _meetingRepository.AddAsync(meeting);
 
-			var dsc = "Toplantınız başarılı bir şekilde oluşturulmuştur!";
-			_mailService.SendMeetingInfo(meeting.UserId, users.Email, meeting.Title, meeting.StartDate, meeting.EndDate, dsc, meeting.DocumentUrl);
+			if (user != null)
+			{
+				var dsc = "Toplantınız başarılı bir şekilde oluşturulmuştur!";
+				_mailService.SendMeetingInfo(meeting.UserId, user.Email, meeting.Title, meeting.StartDate, meeting.EndDate, dsc, meeting.DocumentUrl);
+
+			}
 
 			return true;
 		}
 
-		public bool CancelMeeting(Guid meetingId)
+		public async Task<bool> CancelMeeting(Guid meetingId)
 		{
-			var meeting = _meetingRepository.FirstOrDefault(x => x.ID == meetingId);
+			var meeting = await _meetingRepository.FirstOrDefaultAsync(x => x.ID == meetingId);
 			if (meeting == null)
 			{
 				return false;
@@ -60,24 +66,24 @@ namespace MeetingApp.Api.Services.Concrete
 			meeting.Status = DataStatus.Canceled;
 			meeting.ModifiedDate = DateTime.Now;
 
-			var users = _userRepository.FirstOrDefault(u => u.ID == meeting.UserId);
+			var users = await _userRepository.FirstOrDefaultAsync(u => u.ID == meeting.UserId);
 			var dsc = "Toplantınız iptal edilmiştir!";
 			_mailService.SendMeetingInfo(meeting.UserId, users.Email, meeting.Title, meeting.StartDate, meeting.EndDate, dsc, meeting.DocumentUrl);
 
 
-			_meetingRepository.Update(meeting);
+			await _meetingRepository.UpdateAsync(meeting);
 
 			return true;
 		}
 
-		public bool Delete(Guid ID)
+		public async Task<bool> Delete(Guid ID)
 		{
-			var meeting = _meetingRepository.FirstOrDefault(x => x.ID == ID);
+			var meeting = await  _meetingRepository.FirstOrDefaultAsync(x => x.ID == ID);
 
 			if (meeting == null)
 				return false;
 
-			_meetingRepository.Delete(meeting);
+			await _meetingRepository.DeleteAsync(meeting);
 
 			return true;
 		}
@@ -97,9 +103,9 @@ namespace MeetingApp.Api.Services.Concrete
 			return _meetingRepository.GetAll().ToList();
 		}
 
-		public bool RevertMeeting(Guid meetingId)
+		public async Task<bool> RevertMeeting(Guid meetingId)
 		{
-			var meeting = _meetingRepository.FirstOrDefault(m => m.ID == meetingId);
+			var meeting = await _meetingRepository.FirstOrDefaultAsync(m => m.ID == meetingId);
 			if (meeting == null)
 			{
 				return false;
@@ -108,19 +114,19 @@ namespace MeetingApp.Api.Services.Concrete
 			meeting.Status = DataStatus.Updated;
 			meeting.ModifiedDate = DateTime.Now;
 
-			var users = _userRepository.FirstOrDefault(u => u.ID == meeting.UserId);
+			var users = await _userRepository.FirstOrDefaultAsync(u => u.ID == meeting.UserId);
 			var dsc = "Toplantınız başarılı bir şekilde yeniden oluşturulmuştur!";
 			_mailService.SendMeetingInfo(meeting.UserId, users.Email, meeting.Title, meeting.StartDate, meeting.EndDate, dsc, meeting.DocumentUrl);
 
 
 
-			_meetingRepository.Update(meeting);
+			await _meetingRepository.UpdateAsync(meeting);
 			return true;
 		}
 
-		public bool Update(Guid id, MeetingDTO meetingDTO)
+		public async Task<bool> Update(Guid id, MeetingDTO meetingDTO)
 		{
-			var meeting = _meetingRepository.FirstOrDefault(x => x.ID == id);
+			var meeting = await _meetingRepository.FirstOrDefaultAsync(x => x.ID == id);
 
 			if (meeting == null)
 			{
@@ -134,13 +140,13 @@ namespace MeetingApp.Api.Services.Concrete
 			meeting.DocumentUrl = meetingDTO.DocumentUrl;
 			meeting.UserId = meetingDTO.UserId;
 
-			var users = _userRepository.FirstOrDefault(u => u.ID == meeting.UserId);
+			var users = await _userRepository.FirstOrDefaultAsync(u => u.ID == meeting.UserId);
 			var dsc = "Toplantınızda güncellemeler oluşturulmuştur!";
 			_mailService.SendMeetingInfo(meeting.UserId, users.Email, meeting.Title, meeting.StartDate, meeting.EndDate, dsc, meeting.DocumentUrl);
 
 
 
-			_meetingRepository.Update(meeting);
+			await _meetingRepository.UpdateAsync(meeting);
 			return true;
 
 		}

@@ -16,6 +16,7 @@ namespace MeetingApp.DAL.Contexts
 
 		protected override void OnModelCreating(ModelBuilder modelBuilder)
 		{
+			modelBuilder.Entity<Meeting>().ToTable(t => t.HasTrigger("tr_AfterDeleteMeeting"));
 			modelBuilder.ApplyConfigurationsFromAssembly(Assembly.GetExecutingAssembly());
 		}
 	}
