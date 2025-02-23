@@ -1,0 +1,6 @@
+@MeetingApp.Web_HostAddress = http://localhost:5243
+
+GET {{MeetingApp.Web_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
