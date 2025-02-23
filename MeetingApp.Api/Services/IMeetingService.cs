@@ -11,14 +11,15 @@ namespace MeetingApp.Api.Services
     public interface IMeetingService
     {
         List<Meeting> GetMeetings();
+		List<Meeting> GetCanceledMeetingsAsync();
+		List<Meeting> GetActiveMeetings();
 		Task<bool> CancelMeeting(Guid meetingId);
 		Task<bool> RevertMeeting(Guid meetingId);
-		List<Meeting> GetCanceledMeetings();
-		List<Meeting> GetActiveMeetings();
-
 		Task<bool> Add(MeetingDTO meetingDTO);
 		Task<bool> Update(Guid ID, MeetingDTO meetingDTO);
 		Task<bool> Delete(Guid ID);
+
+		Task DeleteCanceledMeetingsAsync(List<Meeting> meetings);
 
 
 	}

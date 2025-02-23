@@ -58,22 +58,18 @@ namespace MeetingApp.Api.Services.Concrete
 
 		public async Task<bool> CancelMeeting(Guid meetingId)
 		{
-			var meeting = await _meetingRepository.FirstOrDefaultAsync(x => x.ID == meetingId);
+			var meeting = await _meetingRepository.FirstOrDefaultAsync(m => m.ID == meetingId);
 			if (meeting == null)
 			{
 				return false;
 			}
-			meeting.Status = DataStatus.Canceled;
-			meeting.ModifiedDate = DateTime.Now;
 
 			var users = await _userRepository.FirstOrDefaultAsync(u => u.ID == meeting.UserId);
 			var dsc = "Toplantınız iptal edilmiştir!";
 			_mailService.SendMeetingInfo(meeting.UserId, users.Email, meeting.Title, meeting.StartDate, meeting.EndDate, dsc, meeting.DocumentUrl);
 
 
-			await _meetingRepository.UpdateAsync(meeting);
-
-			return true;
+			return await _meetingRepository.CancelMeeting(meetingId);
 		}
 
 		public async Task<bool> Delete(Guid ID)
@@ -93,9 +89,9 @@ namespace MeetingApp.Api.Services.Concrete
 			return _meetingRepository.Where(m => m.Status != DataStatus.Canceled).ToList();
 		}
 
-		public List<Meeting> GetCanceledMeetings()
+		public  List<Meeting> GetCanceledMeetingsAsync()
 		{
-			return _meetingRepository.Where(m => m.Status != DataStatus.Canceled).ToList();
+			return  _meetingRepository.Where(m => m.Status == DataStatus.Canceled).ToList();
 		}
 
 		public List<Meeting> GetMeetings()
@@ -111,16 +107,13 @@ namespace MeetingApp.Api.Services.Concrete
 				return false;
 			}
 
-			meeting.Status = DataStatus.Updated;
-			meeting.ModifiedDate = DateTime.Now;
-
 			var users = await _userRepository.FirstOrDefaultAsync(u => u.ID == meeting.UserId);
 			var dsc = "Toplantınız başarılı bir şekilde yeniden oluşturulmuştur!";
 			_mailService.SendMeetingInfo(meeting.UserId, users.Email, meeting.Title, meeting.StartDate, meeting.EndDate, dsc, meeting.DocumentUrl);
 
 
 
-			await _meetingRepository.UpdateAsync(meeting);
+			await _meetingRepository.RevertMeeting(meetingId);
 			return true;
 		}
 
@@ -149,6 +142,10 @@ namespace MeetingApp.Api.Services.Concrete
 			await _meetingRepository.UpdateAsync(meeting);
 			return true;
 
+		}
+		public async Task DeleteCanceledMeetingsAsync(List<Meeting> meetings)
+		{
+			await _meetingRepository.DeleteCanceledMeetingsAsync(meetings);
 		}
 	}
 }

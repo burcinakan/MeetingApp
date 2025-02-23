@@ -30,9 +30,9 @@ namespace MeetingApp.Web.Controllers
 		}
 
 		[HttpGet("GetCanceledMeetings")]
-		public IActionResult GetCanceledMeetings()
+		public  IActionResult GetCanceledMeetings()
 		{
-			var meetings = _meetingService.GetCanceledMeetings();
+			var meetings =  _meetingService.GetCanceledMeetingsAsync();
 			return Ok(meetings);
 		}
 		[HttpPost("CancelMeeting/{meetingId}")]

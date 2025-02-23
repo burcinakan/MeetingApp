@@ -1,6 +1,7 @@
 using MeetingApp.Api.Repositories;
 using MeetingApp.Api.Services;
 using MeetingApp.Api.Services.Concrete;
+using MeetingApp.Api.Worker;
 using MeetingApp.Context.Repositories;
 using MeetingApp.DAL.Contexts;
 using MeetingApp.Models.Models;
@@ -40,6 +41,9 @@ builder.Services.AddDbContext<SQLContext>(options =>
 	options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"))
 );
 
+
+
+
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJwtBearer(opt =>
 {
 	opt.RequireHttpsMetadata = false;
@@ -55,6 +59,7 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJw
 	};
 });
 
+builder.Services.AddHostedService<WorkerService>();
 
 var app = builder.Build();
 
