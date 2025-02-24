@@ -17,14 +17,14 @@ namespace MeetingApp.Api.Services.Concrete
 			_userRepository = userRepository;
 		}
 
-		public List<User> GetUserById(Guid userId)
+		public async Task<User> GetUserById(Guid userId)
 		{
-			return _userRepository.GetUserById(userId);
+			return await _userRepository.FirstOrDefaultAsync(x => x.ID == userId);
 		}
 
 		public List<User> GetUsers()
 		{
-			return _userRepository.GetUsers();
+			return _userRepository.GetAll();
 		}
 		public async Task<bool> Delete(Guid ID)
 		{

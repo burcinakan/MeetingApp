@@ -12,14 +12,5 @@ namespace MeetingApp.Context.Repositories
 			_context = context;
 		}
 
-		public List<User> GetUserById(Guid userId)
-		{
-			return _context.Users.Where(u => u.ID == userId).ToList();
-		}
-
-		public List<User> GetUsers()
-		{
-			return _context.Users.ToList();
-		}
 	}
 }

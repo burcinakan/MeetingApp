@@ -55,6 +55,8 @@ namespace MeetingApp.Context.Repositories
 
 		public async Task UpdateAsync(T entity)
 		{
+
+
 			entity.Status = Model.Enums.DataStatus.Updated;
 			entity.ModifiedDate = DateTime.Now;
 			var unchangedEntity = await FindAsync(entity.ID);

@@ -12,7 +12,7 @@ namespace MeetingApp.Api.Services
     {
 		List<User> GetUsers();
 
-		List<User> GetUserById(Guid userId);
+		Task<User> GetUserById(Guid userId);
 
 		Task<bool> Delete(Guid ID);
 	}
