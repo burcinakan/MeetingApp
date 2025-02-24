@@ -147,5 +147,14 @@ namespace MeetingApp.Api.Services.Concrete
 		{
 			await _meetingRepository.DeleteCanceledMeetingsAsync(meetings);
 		}
+
+		public List<Meeting> GetMeetingsByUserId(Guid userId)
+		{
+			return _meetingRepository.Where(m => m.UserId == userId && m.Status != DataStatus.Canceled).ToList();
+		}
+		public List<Meeting> GetCancelMeetingsByUserId(Guid userId)
+		{
+			return _meetingRepository.Where(m => m.UserId == userId && m.Status == DataStatus.Canceled).ToList();
+		}
 	}
 }

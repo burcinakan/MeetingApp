@@ -11,6 +11,8 @@ namespace MeetingApp.Api.Services
     public interface IMeetingService
     {
         List<Meeting> GetMeetings();
+		List<Meeting> GetMeetingsByUserId(Guid userId);
+		List<Meeting> GetCancelMeetingsByUserId(Guid userId);
 		List<Meeting> GetCanceledMeetingsAsync();
 		List<Meeting> GetActiveMeetings();
 		Task<bool> CancelMeeting(Guid meetingId);
