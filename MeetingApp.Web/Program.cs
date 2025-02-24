@@ -61,7 +61,23 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJw
 
 builder.Services.AddHostedService<WorkerService>();
 
+
+// CORS ayarlarýný ekle
+builder.Services.AddCors(options =>
+{
+	options.AddPolicy("AllowSpecificOrigin", policy =>
+	{
+		policy.WithOrigins("http://localhost:4200", "https://localhost:4200")
+			  .AllowAnyMethod()
+			  .AllowAnyHeader()
+			  .AllowCredentials();
+	});
+});
+
 var app = builder.Build();
+
+
+app.UseCors("AllowSpecificOrigin");
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
