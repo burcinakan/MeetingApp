@@ -24,9 +24,9 @@ namespace MeetingApp.Web.Controllers
 		    return Ok(users);
 		}
 		[HttpGet("GetUserById")]
-		public IActionResult GetUserById(Guid userId)
+		public async Task<IActionResult> GetUserById(Guid userId)
 		{
-			var users = _userService.GetUserById(userId);
+			var users = await _userService.GetUserById(userId);
 			return Ok(users);
 		}
 

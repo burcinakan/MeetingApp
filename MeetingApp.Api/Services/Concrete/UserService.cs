@@ -19,7 +19,12 @@ namespace MeetingApp.Api.Services.Concrete
 
 		public async Task<User> GetUserById(Guid userId)
 		{
-			return await _userRepository.FirstOrDefaultAsync(x => x.ID == userId);
+			var user = await _userRepository.FirstOrDefaultAsync(x => x.ID == userId);
+			if (user == null)
+			{
+				throw new Exception("User not found");
+			}
+			return user;
 		}
 
 		public List<User> GetUsers()
